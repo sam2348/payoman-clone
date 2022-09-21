@@ -61,7 +61,7 @@ const AddAccount = () => {
                     <input type="text" onChange={inputHandler} name="SwiftCode" className="form-control" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="xxxx xxxxx xxxx" />
                 </div>
                 <br />
-                <button type="submit" className="btn btn-primary mb-3" onClick={AddAccountDetailSubmit}><NavLink to="/TransferBank" className="text-white">Confirm
+                <button type="submit" className="btn btn-primary mb-3" onClick={AddAccountDetailSubmit}><NavLink to="/transferbank" className="text-white">Confirm
                 &nbsp;<i className="fa-solid fa-arrow-right" /></NavLink></button>
 
                </div>

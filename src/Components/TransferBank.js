@@ -44,7 +44,7 @@ const TransferBank = () => {
                   {
                     showAccountDetail.map((data)=>{
                       return(
-                  <NavLink to="/PaymentProcess" className="text-dark">
+                  <NavLink to="/paymentprocess" className="text-dark">
                     <div className="row p-2 pay " key={data.id}>
                       <div className="col-2">
                         <img
@@ -74,7 +74,7 @@ const TransferBank = () => {
                 <div className="row mt-1">
                   <div className="col mt-2 pt-2 text-center">
                     <button type="submit" className="btn btn-primary">
-                    <NavLink to="/AddAccount" className="text-white">
+                    <NavLink to="/addaccount" className="text-white">
                       <i className="fa-solid fa-building-columns transfer" />
                         &nbsp; Add New Account
                       </NavLink>

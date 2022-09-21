@@ -32,7 +32,7 @@ const ForgetPassword = () => {
                   />
                 </div>
                 <button type="submit" className="btn btn-primary">
-                  <NavLink to="/PasswordReset" className="text-white">
+                  <NavLink to="/passwordreset" className="text-white">
                     Continue &nbsp;
                     <i className="fa-solid fa-arrow-right" />
                   </NavLink>

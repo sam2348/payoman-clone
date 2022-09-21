@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { NavLink,useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 import { auth } from './Firebase';
 
 const Signup = () => {
+
     const navigate = useNavigate()
-    const[errorMsg,setErrorMsg]=useState("")
+    const[errorMsg,setErrorMsg]=useState('')
     const[ragisterData,setragisterData]=useState({
         emailaddress:"",
         businessname:"",
@@ -14,10 +18,12 @@ const Signup = () => {
         password:"",
         confirmpassword:"",
     })
-
+   
     const signupFromSubmit =()=>{
+        var timer;
+        let msg = toast.success("you are ragister successfully !")
         if(!ragisterData.emailaddress || !ragisterData.businessname || !ragisterData.phonenumber || !ragisterData.password || !ragisterData.confirmpassword){
-            setErrorMsg("fill all the fields");
+            setErrorMsg(msg);
             return;
         }
         setErrorMsg("");
@@ -27,18 +33,26 @@ const Signup = () => {
             await updateProfile(user,{
                 displayName:ragisterData.businessname,
             });
-            navigate('login')
+            timer =setInterval(()=>{
+            if(timer===1000){
+                 navigate('login')
+            }
+            },1000)
+            return()=>clearInterval(timer);
         }
         ).catch((err)=> {
             setErrorMsg(err.message);
         });
+        
     };
+
     const inputHandler=(event)=>{
         setragisterData((prev)=>({
             ...prev,
             [event.target.name]: event.target.value,
         }))
     }
+    
   return (
     <>
           <div className="container-fluid">
@@ -68,10 +82,11 @@ const Signup = () => {
                                   <input type="password" name='confirmpassword' onChange={inputHandler} className="form-control" id="exampleInputPassword1" placeholder="Confirm Password" />
                               </div>
                               <b className='errorMsg'>{errorMsg}</b >
-                              <NavLink ><button type="submit" className="btn btn-primary" onClick={signupFromSubmit} >Register&nbsp; <i className="fa-solid fa-arrow-right" /></button></NavLink>
+                              <button type="button" className="btn btn-primary" onClick={signupFromSubmit} >Register&nbsp; <i className="fa-solid fa-arrow-right" /></button>
+                              <ToastContainer />
                               <div className="row mt-1">
                                   <div className="col mt-2 text-center">
-                                      Already have account?  <NavLink  to="/Login" className="bottom-text">Login</NavLink>
+                                      Already have account?  <NavLink  to="/login" className="bottom-text">Login</NavLink>
                                   </div>
                               </div>
                           </div>

@@ -97,3 +97,7 @@ button.btn.btn-primary.add-new-account{
     background: rgb(248, 194, 194);
     border-radius: 5px;
 }
+.toast{
+    background: green;
+    color: #fff; 
+}

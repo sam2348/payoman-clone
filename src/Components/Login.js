@@ -48,6 +48,12 @@ const Login = () => {
             [event.target.name]: event.target.value,
         }))
     }
+      useEffect(() => {
+        let login = localStorage.getItem('login');
+        if(login){
+          navigate('/')
+        }
+      })
   return (
     <div>
         <div className="container-fluid">
@@ -65,21 +71,27 @@ const Login = () => {
                                  <div>{errorMsg}</div >
                                  </div>
                               <div className="input-group mb-3">
-                                  <input type="text" name='emailaddress' onChange={emailInputHandler} className="form-control" id="exampleInputNumber1" placeholder="Enter phone number" />
+                                  <input type="text" 
+                                  name='emailaddress' onChange={emailInputHandler} 
+                                  className="form-control" id="exampleInputNumber1" placeholder="Enter phone number" />
                               </div>
                               <div className="input-group mb-3">
-                                  <input type="password" name='password' onChange={passwordInputHandler} className="form-control" id="exampleInputPassword1" placeholder="Enter password" />
+                                  <input type="password" 
+                                  name='password' onChange={passwordInputHandler} 
+                                  className="form-control" id="exampleInputPassword1" placeholder="Enter password" />
                               </div>
                               <div className="input-group ">
                                   <div className="col-sm text-end">
-                                      <NavLink to="/ForgetPassword">Forgot Password?</NavLink>
+                                      <NavLink to="/forgetpassword">Forgot Password?</NavLink>
                                   </div>
                               </div>
                               <br />
-                              <button type="button" className="btn btn-primary" onClick={LoginHandler} > Login&nbsp; <i className="fa-solid fa-right-to-bracket" /></button>
+                              <button type="button" className="btn btn-primary" 
+                               onClick={LoginHandler} 
+                              > Login&nbsp; <i className="fa-solid fa-right-to-bracket" /></button>
                               <div className="row mt-1">
                                   <div className="col mt-2 pt-2 text-center">
-                                      Don't have account?  <NavLink to="/Signup" className="bottom-text">Register now</NavLink>
+                                      Don't have account?  <NavLink to="/signup" className="bottom-text">Register now</NavLink>
                                   </div>
                               </div>
                         </div>
