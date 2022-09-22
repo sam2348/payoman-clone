@@ -1,22 +1,36 @@
 import React, { useState,useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import { getDocs, collection } from 'firebase/firestore';
+import { db } from './Firebase';
 import axios from 'axios';
 
 const TransferBank = () => {
   const [showAccountDetail,setShowAccountDetail]=useState([]);
-  console.log(showAccountDetail)
+  
+  console.log(showAccountDetail,'===================')
+  useEffect(() => {
+    GetAccountDetails();
+  },[])
+
   const GetAccountDetails= async ()=>{
-    try {
-    const result = await axios.get("http://localhost:3001/account")
-    setShowAccountDetail(result.data)
-    } catch (error){
-        alert(error,"No Data Found")
-    }
+    // try {
+    // const result = await axios.get("http://localhost:3001/account")
+    // setShowAccountDetail(result.data)
+    // } catch (error){
+    //     alert(error,"No Data Found")
+    // }
+    const AccountColl = collection(db, "accounts")
+    getDocs(AccountColl)
+    .then((res)=>{
+        const acc = res.docs.map(doc =>({
+          data: doc.data(),
+          id:doc.id,
+        }))
+        setShowAccountDetail(acc);
+    }).catch((err)=> {
+        console.log(err.message);
+    });   
     };
-    useEffect(() => {
-      GetAccountDetails();
-    },[])
-    
   return (
     <div>
       <div className="container-fluid ">
@@ -44,8 +58,8 @@ const TransferBank = () => {
                   {
                     showAccountDetail.map((data)=>{
                       return(
-                  <NavLink to="/paymentprocess" className="text-dark">
-                    <div className="row p-2 pay " key={data.id}>
+                  <NavLink to="/paymentprocess" className="text-dark" key={data.id}>
+                    <div className="row p-2 pay ">
                       <div className="col-2">
                         <img
                           src="img/avatar.webp"
@@ -54,8 +68,8 @@ const TransferBank = () => {
                         />
                       </div>
                       <div className="col-8 ps-4">
-                        <h6> {data.BusinessName} </h6>
-                          <span>{data.AccountNumber}</span>
+                        <h6> {data.data.accontDteails.BusinessName} </h6>
+                          <span>{data.data.accontDteails.AccountNumber}</span>
                       </div>
                       <div className="col-2 pt-2">
                         <img

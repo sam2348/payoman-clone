@@ -1,5 +1,7 @@
 import React,{useState} from 'react';
 import { NavLink,useNavigate } from 'react-router-dom';
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from './Firebase';
 import axios from 'axios';
 const url="http://localhost:3001/account"
 
@@ -11,20 +13,31 @@ const AddAccount = () => {
     AccountNumber: "",
     SwiftCode: ""
   });
+
+
   const AddAccountDetailSubmit= (e)=>{
     e.preventDefault();
-    try {
-        axios.post(url, {
-            BusinessName: accontDteails.BusinessName,
-            BankName: accontDteails.BankName,
-            AccountNumber: accontDteails.AccountNumber,
-            SwiftCode: accontDteails.SwiftCode,
-        });
-    } catch (error){
-        alert(error,"hello")
-    }
+    // try {
+    //     axios.post(url, {
+    //         BusinessName: accontDteails.BusinessName,
+    //         BankName: accontDteails.BankName,
+    //         AccountNumber: accontDteails.AccountNumber,
+    //         SwiftCode: accontDteails.SwiftCode,
+    //     });
+    // } catch (error){
+    //     alert(error,"hello")
+    // }
+    const AccountColl = collection(db, "accounts")
+    addDoc(AccountColl, {accontDteails})
+    .then((res)=>{
+        console.log(res);
+    }).catch((err)=> {
+        console.log(err.message);
+    });   
     navigate("/TransferBank");
     };
+
+
     const inputHandler=(event)=>{
         setAccontDteails((prestate) => ({
         ...prestate,

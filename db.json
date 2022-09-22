@@ -20,6 +20,13 @@
       "AccountNumber": "72990015777888",
       "SwiftCode": "PUNB0729900",
       "id": 3
+    },
+    {
+      "BusinessName": "SHALINIPAYOMAN",
+      "BankName": "STATE BANK OF INDIA",
+      "AccountNumber": "2316 25672 266",
+      "SwiftCode": "SBI2672907",
+      "id": 4
     }
   ]
 }

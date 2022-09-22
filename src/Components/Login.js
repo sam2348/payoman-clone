@@ -3,6 +3,8 @@ import { NavLink,useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Bars } from  'react-loader-spinner'
+
 
 import { auth } from './Firebase';
 
@@ -10,24 +12,45 @@ const Login = () => {
     const navigate = useNavigate()
     const[emailErrorMsg,setEmailErrorMsg]=useState('')
     const[passwordErrorMsg,setPasswordErrorMsg]=useState('')
-    const[errorMsg,setErrorMsg]=useState('')
     const[ragisterData,setragisterData]=useState({
         emailaddress:"",
         password:"",
     })
     const LoginHandler =()=>{
-        
-        var regExx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
-        var regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (!regEx.test(ragisterData.emailaddress)) {
+        if(!ragisterData.emailaddress || !ragisterData.password ){
+            setEmailErrorMsg('enter your email address')
+            setPasswordErrorMsg('enter your password')
+        }
+        let regEmail = /^[a-zA-Z0-9.! #$%&'*+/=? ^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        let regPass =/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!regEmail.test(ragisterData.emailaddress)) {
             setEmailErrorMsg("enter vaild email address");
             return;
-        }else if(!regExx.test(ragisterData.password)){
+        }if (regEmail.test(ragisterData.emailaddress)){
+            setEmailErrorMsg(" ");
+        }
+        if(!regPass.test(ragisterData.password)){
             setPasswordErrorMsg("enter vaild password");
             return;
+        }if(regPass.test(ragisterData.password)){
+            setPasswordErrorMsg(" ");
         }
-        setEmailErrorMsg(" ");
-        setPasswordErrorMsg(" ");
+        // switch (ragisterData) {
+        //     case "emailaddress":
+        //       if (!regEmail.test(ragisterData.emailaddress)) {
+        //         setEmailErrorMsg("enter vaild email address");
+        //         return;
+        //       } else {
+        //         setEmailErrorMsg(" ");
+        //       }
+        //     case "passwordErrorMsg":
+        //       if (regPass.test(ragisterData.password)) {
+        //         setPasswordErrorMsg("enter vaild password");
+        //         return;
+        //       }else{
+        //         setPasswordErrorMsg(" ");
+        //       }
+        //     }  
         signInWithEmailAndPassword(auth,ragisterData.emailaddress,ragisterData.password)
         .then(()=>{
           localStorage.setItem('login',true)
@@ -39,27 +62,11 @@ const Login = () => {
         });
         
     };
-    const emailInputHandler=(event)=>{
-        // var regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        // if (!regEx.test(event.target.value)) {
-        //     setErrorMsg("enter vaild email address");
-            
-        // }
+    const inputHandler=(event)=>{
         setragisterData((prev)=>({
             ...prev,
             [event.target.name]: event.target.value,
         })) 
-    }
-    const passwordInputHandler=(event)=>{
-        // var regExx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
-        // if (!regExx.test(event.target.value)) {
-        //     setErrorMsg("enter vaild password");
-            
-        // }
-        setragisterData((prev)=>({
-            ...prev,
-            [event.target.name]: event.target.value,
-        }))
     }
       useEffect(() => {
         let login = localStorage.getItem('login');
@@ -69,6 +76,15 @@ const Login = () => {
       })
   return (
     <div>
+        <Bars
+            height = "80"
+            width = "80"
+            radius = "9"
+            color = 'green'
+            ariaLabel = 'three-dots-loading'     
+            wrapperStyle
+            wrapperClass
+        />
         <div className="container-fluid">
               <div className="row">
                   <div className="col-sm-2 col-md-4">  
@@ -82,13 +98,13 @@ const Login = () => {
                                 <h5 className="form-heading mb-4 p-2 text-center">Login to payoman</h5>
                               <div className="input-group mb-1">
                                   <input type="text" 
-                                  name='emailaddress' onChange={emailInputHandler} 
+                                  name='emailaddress' onChange={inputHandler} 
                                   className="form-control" id="exampleInputNumber1" placeholder="Enter phone number" />
                               </div>
                               <span className='errorMsg '>{emailErrorMsg}</span >
                               <div className="input-group mb-1 mt-2">
                                   <input type="password" 
-                                  name='password' onChange={passwordInputHandler} 
+                                  name='password' onChange={inputHandler} 
                                   className="form-control" id="exampleInputPassword1" placeholder="Enter password" />
                               </div>
                               <span className='errorMsg '>{passwordErrorMsg}</span >

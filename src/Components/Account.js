@@ -1,12 +1,33 @@
 import React, { useEffect,useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { getDocs, collection } from 'firebase/firestore';
+import { db } from './Firebase';
 
 import { signOut } from "firebase/auth";
 import { auth } from './Firebase';
 
 const Account = () => {
   const navigate = useNavigate();
+  const [showDetails, setShowDetails]=useState([])
   const[errorMsg,setErrorMsg]=useState("")
+
+  useEffect(() => {
+    GetAccountDetails();
+  },[])
+  const GetAccountDetails= async ()=>{
+    const AccountColl = collection(db, "accounts")
+    getDocs(AccountColl)
+    .then((res)=>{
+        const acc = res.docs.map(doc =>({
+          data: doc.data(),
+          id:doc.id,
+        }))
+        setShowDetails(acc);
+    }).catch((err)=> {
+        console.log(err.message);
+    });   
+    };
+
   const LogoutHandler = () => {
     signOut(auth).then(() => {
       setErrorMsg('Sign-out successful.')
@@ -36,16 +57,22 @@ const Account = () => {
               />
             </div>
             <div className="col-sm-7 col-md-7 pt-2">
+            {
+              showDetails.map((data)=>{
+                      return(
               <ul className="list-unstyled ">
                 <li>
                   <h5>
-                    <strong>NAME OF BUSINESS</strong>
+                    <strong>{data.data.accontDteails.BusinessName}</strong>
                   </h5>
                 </li>
                 <li>
-                  <span>Name of the bank account</span>
+                  <span>{data.data.accontDteails.AccountNumber}</span>
                 </li>
               </ul>
+               )
+              })
+              }
             </div>
             <div className="col-sm-2 col-md-2 pt-2">
               <ul className="list-unstyled">
