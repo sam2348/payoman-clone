@@ -34,7 +34,7 @@ const AddAccount = () => {
     }).catch((err)=> {
         console.log(err.message);
     });   
-    navigate("/TransferBank");
+    navigate("/transferbank");
     };
 
 

@@ -3,13 +3,16 @@ import { NavLink,useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { addDoc, collection } from 'firebase/firestore';
+import LoadingSpinner from "./LoadingSpinner";
+import { db } from './Firebase';
 
 import { auth } from './Firebase';
 
 const Signup = () => {
 
     const navigate = useNavigate()
+    const [isLoading, setIsLoading] = useState(false);
     const[emailErrorMsg,setEmailErrorMsg]=useState('')
     const[businessErrorMsg,setBusinessErrorMsg]=useState('')
     const[phoneErrorMsg,setPhoneErrorMsg]=useState('')
@@ -23,7 +26,8 @@ const Signup = () => {
         confirmpassword:"",
     })
    
-    const signupFromSubmit =()=>{
+    const signupFromSubmit =(e)=>{
+        e.preventDefault();
         if(!ragisterData.emailaddress || !ragisterData.businessname || !ragisterData.phonenumber || !ragisterData.password || !ragisterData.confirmpassword){
             setBusinessErrorMsg("enter your business name");
             setConfirmPasswordErrorMsg('enter confirm password')
@@ -60,16 +64,26 @@ const Signup = () => {
             return;
         }if (ragisterData.password === ragisterData.confirmpassword) {
             setConfirmPasswordErrorMsg("");
-        }
+        }  
+        setIsLoading(true)
         createUserWithEmailAndPassword(auth,ragisterData.emailaddress,ragisterData.password)
         .then(async(res)=>{
             const user =res.user;
             await updateProfile(user,{
                 displayName:ragisterData.businessname,
             });
+            const AccountColl = collection(db, "signupData")
+            addDoc(AccountColl, {ragisterData})
+            .then((res)=>{
+                console.log(res);
+            }).catch((err)=> {
+                console.log(err.message);
+            }); 
             navigate('login');
+            setIsLoading(false)
         }).catch((err)=> {
             toast.error(err.message);
+            setIsLoading(false)
         });   
     };
     const inputHandler=(event)=>{
@@ -79,8 +93,9 @@ const Signup = () => {
         }))
     }
   return (
-    <>
-          <div className="container-fluid">
+    <>      
+           {isLoading ? <LoadingSpinner /> : <>
+            <div className="container-fluid">
               <div className="row">
                   <div className="col-sm-2 col-md-4">
                   </div>
@@ -111,7 +126,7 @@ const Signup = () => {
                                   <input type="password" name='confirmpassword' onChange={inputHandler} className="form-control" id="exampleInputPassword1" placeholder="Confirm Password" />
                               </div>
                               <span className='errorMsg '>{confirmPasswordErrorMsg}</span >
-                              <button type="button" className="btn btn-primary mt-2" onClick={signupFromSubmit} >Register&nbsp; <i className="fa-solid fa-arrow-right" /></button>
+                              <button type="button" className="btn btn-primary mt-2" onClick={signupFromSubmit} disabled={isLoading} >Register&nbsp; <i className="fa-solid fa-arrow-right" /></button>
                               <ToastContainer />
                               <div className="row mt-1">
                                   <div className="col mt-2 text-center">
@@ -123,6 +138,7 @@ const Signup = () => {
                   </div>
               </div>
           </div>
+       </>}
     </>
   )
 }

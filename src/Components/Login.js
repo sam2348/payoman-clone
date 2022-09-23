@@ -4,13 +4,17 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Bars } from  'react-loader-spinner'
+import LoadingSpinner from "./LoadingSpinner";
+
 
 
 import { auth } from './Firebase';
 
 const Login = () => {
     const navigate = useNavigate()
+    const [passwordShown, setPasswordShown] = useState(false);
     const[emailErrorMsg,setEmailErrorMsg]=useState('')
+    const [isLoading, setIsLoading] = useState(false);
     const[passwordErrorMsg,setPasswordErrorMsg]=useState('')
     const[ragisterData,setragisterData]=useState({
         emailaddress:"",
@@ -35,30 +39,16 @@ const Login = () => {
         }if(regPass.test(ragisterData.password)){
             setPasswordErrorMsg(" ");
         }
-        // switch (ragisterData) {
-        //     case "emailaddress":
-        //       if (!regEmail.test(ragisterData.emailaddress)) {
-        //         setEmailErrorMsg("enter vaild email address");
-        //         return;
-        //       } else {
-        //         setEmailErrorMsg(" ");
-        //       }
-        //     case "passwordErrorMsg":
-        //       if (regPass.test(ragisterData.password)) {
-        //         setPasswordErrorMsg("enter vaild password");
-        //         return;
-        //       }else{
-        //         setPasswordErrorMsg(" ");
-        //       }
-        //     }  
+        setIsLoading(true);
         signInWithEmailAndPassword(auth,ragisterData.emailaddress,ragisterData.password)
         .then(()=>{
           localStorage.setItem('login',true)
           navigate('/')
+          setIsLoading(false)
         }
         ).catch((err)=> {
             toast.error(err.message);
-            
+            setIsLoading(false);
         });
         
     };
@@ -74,17 +64,12 @@ const Login = () => {
           navigate('/')
         }
       })
+      const togglePasswordVisiblity = () => {
+        setPasswordShown(passwordShown ? false : true);
+      };
   return (
     <div>
-        <Bars
-            height = "80"
-            width = "80"
-            radius = "9"
-            color = 'green'
-            ariaLabel = 'three-dots-loading'     
-            wrapperStyle
-            wrapperClass
-        />
+        {isLoading ? <LoadingSpinner /> : <>
         <div className="container-fluid">
               <div className="row">
                   <div className="col-sm-2 col-md-4">  
@@ -103,10 +88,11 @@ const Login = () => {
                               </div>
                               <span className='errorMsg '>{emailErrorMsg}</span >
                               <div className="input-group mb-1 mt-2">
-                                  <input type="password" 
+                                  <input type={passwordShown ? "text" : "password"}
                                   name='password' onChange={inputHandler} 
                                   className="form-control" id="exampleInputPassword1" placeholder="Enter password" />
                               </div>
+                              <span className='eye'><i className='fas fa-eye' onClick={togglePasswordVisiblity}></i></span>
                               <span className='errorMsg '>{passwordErrorMsg}</span >
                               <div className="input-group ">
                                   <div className="col-sm text-end">
@@ -115,7 +101,7 @@ const Login = () => {
                               </div>
                               <br />
                               <button type="button" className="btn btn-primary" 
-                               onClick={LoginHandler} 
+                               onClick={LoginHandler} disabled={isLoading}
                               > Login&nbsp; <i className="fa-solid fa-right-to-bracket" /></button>
                               < ToastContainer />
                               <div className="row mt-1">
@@ -128,6 +114,7 @@ const Login = () => {
                 </div>
             </div>
          </div>
+         </>}
     </div>
   )
 }

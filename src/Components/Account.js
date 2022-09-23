@@ -1,6 +1,6 @@
 import React, { useEffect,useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { getDocs, collection } from 'firebase/firestore';
+import { getDocs, collection, doc, onSnapshot } from 'firebase/firestore';
 import { db } from './Firebase';
 
 import { signOut } from "firebase/auth";
@@ -14,6 +14,13 @@ const Account = () => {
   useEffect(() => {
     GetAccountDetails();
   },[])
+
+  // =============================get single data in firebase =====================================
+  // const docRef = doc(db, "accounts", '5XASfk7gTJkZlMTpSjcT')
+  // onSnapshot(docRef, (doc)=> {
+  //   console.log(doc.data(),doc.id,"======")
+  // })
+
   const GetAccountDetails= async ()=>{
     const AccountColl = collection(db, "accounts")
     getDocs(AccountColl)
@@ -60,6 +67,7 @@ const Account = () => {
             {
               showDetails.map((data)=>{
                       return(
+                        
               <ul className="list-unstyled ">
                 <li>
                   <h5>
